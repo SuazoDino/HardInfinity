@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\ShipmentController;
+use App\Http\Controllers\Admin\InventoryController;
 
 // Controladores de Shop
 use App\Http\Controllers\Shop\HomeController;
@@ -141,6 +142,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::put('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
+    Route::post('orders/{order}/estornar', [OrderController::class, 'estornar'])->name('orders.estornar');
     Route::get('orders/{order}/pdf', [OrderController::class, 'downloadPdf'])->name('orders.download-pdf');
     
     // Gestión de Usuarios
@@ -151,4 +153,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     
     // Gestión de Envíos
     Route::post('orders/{order}/shipment', [ShipmentController::class, 'store'])->name('orders.shipment.store');
+    
+    // Gestión de Inventario
+    Route::get('inventory', [InventoryController::class, 'index'])->name('inventory.index');
+    Route::post('inventory/ajustar', [InventoryController::class, 'ajustar'])->name('inventory.ajustar');
+    Route::get('inventory/stock-bajo', [InventoryController::class, 'stockBajo'])->name('inventory.stock-bajo');
 });

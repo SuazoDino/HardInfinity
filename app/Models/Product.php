@@ -77,6 +77,12 @@ class Product extends Model
         return $this->hasMany(Wishlist::class);
     }
 
+    // Relación: Un producto tiene muchos movimientos de inventario
+    public function inventoryMovements()
+    {
+        return $this->hasMany(InventoryMovement::class);
+    }
+
     // Helper: Imagen principal
     public function primaryImage()
     {

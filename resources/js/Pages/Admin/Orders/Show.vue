@@ -109,6 +109,16 @@ const formatDate = (dateString) => {
                     >
                         Cancelar Orden
                     </button>
+
+                    <Link 
+                        v-if="['pending', 'paid', 'cancelled'].includes(order.status)"
+                        :href="route('admin.orders.estornar', order.id)"
+                        method="post"
+                        as="button"
+                        class="px-4 py-2 bg-yellow-600/20 border border-yellow-500/30 text-yellow-400 hover:bg-yellow-600/30 text-sm font-bold rounded-lg transition-colors flex items-center gap-2"
+                    >
+                        <span>↩️</span> Estornar Stock
+                    </Link>
                 </div>
             </div>
 

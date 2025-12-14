@@ -8,6 +8,8 @@ use App\Models\OrderItem;
 use App\Models\Coupon;
 use App\Models\PaymentMethod;
 use App\Models\Transaction;
+use App\Models\InventoryMovement;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -97,7 +99,7 @@ class CheckoutController extends Controller
                 'notes' => 'Pago con: ' . $request->payment_method . ($couponCode ? ' | Cupón: ' . $couponCode : ''),
             ]);
 
-            // Crear items de la orden
+            // Crear items de la orden y descontar stock
             foreach ($cart as $item) {
                 OrderItem::create([
                     'order_id' => $order->id,
@@ -107,9 +109,15 @@ class CheckoutController extends Controller
                     'total_price' => $item['price'] * $item['quantity'],
                 ]);
                 
-                // Opcional: Descontar stock aquí
-                // $product = Product::find($item['id']);
-                // $product->decrement('stock', $item['quantity']);
+                // Descontar stock y registrar movimiento de inventario
+                InventoryMovement::registrar(
+                    $item['id'], 
+                    'salida', 
+                    $item['quantity'], 
+                    'Venta - Orden #' . $order->order_number,
+                    $order->id,
+                    auth()->id()
+                );
             }
 
             // Registrar transacción simulada

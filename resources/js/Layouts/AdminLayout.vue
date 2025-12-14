@@ -37,6 +37,13 @@ const menuItems = [
         ]
     },
     {
+        section: 'Inventario',
+        items: [
+            { name: 'Movimientos', icon: '📦', route: 'admin.inventory.index', current: 'admin.inventory.index' },
+            { name: 'Stock Bajo', icon: '⚠️', route: 'admin.inventory.stock-bajo', current: 'admin.inventory.stock-bajo' }
+        ]
+    },
+    {
         section: 'Sistema',
         items: [
             { name: 'Usuarios', icon: '👥', route: 'admin.users.index', current: 'admin.users.*' }
