@@ -143,6 +143,13 @@ class ProductSeeder extends Seeder
                 'is_featured' => $productData['is_featured'],
             ]);
 
+            // Crear imagen de placeholder
+            $product->images()->create([
+                'image_path' => 'https://via.placeholder.com/500x500/1a202c/0ea5e9?text=' . urlencode($product->name),
+                'is_primary' => true,
+                'order' => 0,
+            ]);
+
             // Crear especificaciones
             foreach ($productData['specifications'] as $spec) {
                 $product->specifications()->create($spec);
