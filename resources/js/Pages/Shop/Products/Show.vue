@@ -14,7 +14,7 @@ const props = defineProps({
     in_wishlist: Boolean,
 });
 
-const activeImage = ref(props.product.images.find(img => img.is_primary)?.image_url || props.product.images[0]?.image_url || '/images/placeholder-product.png');
+const activeImage = ref(props.product.images.find(img => img.is_primary)?.image_path || props.product.images[0]?.image_path || '/images/placeholder-product.png');
 const quantity = ref(1);
 const page = usePage();
 const user = computed(() => page.props.auth.user);
@@ -108,11 +108,11 @@ const submitReview = () => {
                         <button 
                             v-for="img in product.images" 
                             :key="img.id"
-                            @click="activeImage = img.image_url"
+                            @click="activeImage = img.image_path"
                             class="w-20 h-20 rounded-lg bg-dark-card border border-white/10 flex-shrink-0 p-2 flex items-center justify-center hover:border-brand-500 transition-all"
-                            :class="{ 'border-brand-500 ring-2 ring-brand-500/20': activeImage === img.image_url }"
+                            :class="{ 'border-brand-500 ring-2 ring-brand-500/20': activeImage === img.image_path }"
                         >
-                            <img :src="img.image_url" class="max-w-full max-h-full object-contain" />
+                            <img :src="img.image_path" class="max-w-full max-h-full object-contain" />
                         </button>
                     </div>
                 </div>

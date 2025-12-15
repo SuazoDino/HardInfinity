@@ -26,7 +26,7 @@ const removeItem = (productId) => {
 
         <div v-if="items.length" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             <div v-for="item in items" :key="item.id" class="bg-[#151A23] border border-white/5 rounded-xl p-4 flex gap-4">
-                <img :src="item.product.primary_image?.image_url || item.product.images?.[0]?.image_url || '/images/default-product.png'"
+                <img :src="item.product.primary_image?.image_path || item.product.images?.[0]?.image_path || '/images/default-product.png'"
                     alt="Producto"
                     class="w-20 h-20 object-cover rounded-lg border border-white/5">
                 <div class="flex-1 min-w-0">

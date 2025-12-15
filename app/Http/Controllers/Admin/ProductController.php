@@ -88,7 +88,7 @@ class ProductController extends Controller
             foreach ($request->file('images') as $index => $image) {
                 $path = $image->store('products', 'public');
                 $product->images()->create([
-                    'image_url' => '/storage/' . $path,
+                    'image_path' => '/storage/' . $path,
                     'is_primary' => $index === 0, // La primera imagen es la principal
                 ]);
             }
@@ -171,7 +171,7 @@ class ProductController extends Controller
                 $image = $product->images()->find($imageId);
                 if ($image) {
                     // Eliminar archivo físico
-                    $imagePath = str_replace('/storage/', '', $image->image_url);
+                    $imagePath = str_replace('/storage/', '', $image->image_path);
                     \Storage::disk('public')->delete($imagePath);
                     // Eliminar registro de BD
                     $image->delete();
@@ -185,7 +185,7 @@ class ProductController extends Controller
             foreach ($request->file('new_images') as $index => $image) {
                 $path = $image->store('products', 'public');
                 $product->images()->create([
-                    'image_url' => '/storage/' . $path,
+                    'image_path' => '/storage/' . $path,
                     'is_primary' => $existingImagesCount === 0 && $index === 0, // Si no hay imágenes, la primera es principal
                 ]);
             }

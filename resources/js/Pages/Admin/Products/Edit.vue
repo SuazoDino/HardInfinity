@@ -207,7 +207,7 @@ const submit = () => {
                             <h4 class="text-lg font-semibold text-white mb-4">Imágenes Actuales</h4>
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 <div v-for="image in product.images.filter(img => !form.images_to_delete.includes(img.id))" :key="image.id" class="relative group">
-                                    <img :src="image.image_url" class="w-full h-32 object-cover rounded-lg border border-primary-blue/20" />
+                                    <img :src="image.image_path" class="w-full h-32 object-cover rounded-lg border border-primary-blue/20" />
                                     <button
                                         type="button"
                                         @click="deleteExistingImage(image.id)"
