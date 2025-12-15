@@ -204,8 +204,8 @@ const submitReview = () => {
                     
                     <div v-if="product.specifications && product.specifications.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
                         <div v-for="spec in product.specifications" :key="spec.id" class="flex justify-between border-b border-white/5 py-3">
-                            <span class="text-gray-400">{{ spec.name }}</span>
-                            <span class="text-white font-medium text-right">{{ spec.value }}</span>
+                            <span class="text-gray-400">{{ spec.spec_name }}</span>
+                            <span class="text-white font-medium text-right">{{ spec.spec_value }}</span>
                         </div>
                     </div>
                     <div v-else class="text-gray-500 italic">

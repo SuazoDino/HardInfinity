@@ -73,8 +73,8 @@ class ProductController extends Controller
             'is_featured' => 'boolean',
             'images.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120', // 5MB
             'specifications' => 'nullable|array',
-            'specifications.*.name' => 'nullable|string|max:255',
-            'specifications.*.value' => 'nullable|string|max:255',
+            'specifications.*.spec_name' => 'nullable|string|max:255',
+            'specifications.*.spec_value' => 'nullable|string|max:255',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
@@ -97,10 +97,10 @@ class ProductController extends Controller
         // Guardar especificaciones
         if ($request->has('specifications')) {
             foreach ($request->specifications as $spec) {
-                if (!empty($spec['name']) && !empty($spec['value'])) {
+                if (!empty($spec['spec_name']) && !empty($spec['spec_value'])) {
                     $product->specifications()->create([
-                        'name' => $spec['name'],
-                        'value' => $spec['value'],
+                        'spec_name' => $spec['spec_name'],
+                        'spec_value' => $spec['spec_value'],
                     ]);
                 }
             }
@@ -155,8 +155,8 @@ class ProductController extends Controller
             'images_to_delete' => 'nullable|array',
             'images_to_delete.*' => 'nullable|integer|exists:product_images,id',
             'specifications' => 'nullable|array',
-            'specifications.*.name' => 'nullable|string|max:255',
-            'specifications.*.value' => 'nullable|string|max:255',
+            'specifications.*.spec_name' => 'nullable|string|max:255',
+            'specifications.*.spec_value' => 'nullable|string|max:255',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
@@ -195,10 +195,10 @@ class ProductController extends Controller
         if ($request->has('specifications')) {
             $product->specifications()->delete();
             foreach ($request->specifications as $spec) {
-                if (!empty($spec['name']) && !empty($spec['value'])) {
+                if (!empty($spec['spec_name']) && !empty($spec['spec_value'])) {
                     $product->specifications()->create([
-                        'name' => $spec['name'],
-                        'value' => $spec['value'],
+                        'spec_name' => $spec['spec_name'],
+                        'spec_value' => $spec['spec_value'],
                     ]);
                 }
             }

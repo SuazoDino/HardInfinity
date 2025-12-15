@@ -47,7 +47,7 @@ const removeImage = (index) => {
 
 // Gestión de especificaciones
 const addSpecification = () => {
-    form.specifications.push({ name: '', value: '' });
+    form.specifications.push({ spec_name: '', spec_value: '' });
 };
 
 const removeSpecification = (index) => {
@@ -254,7 +254,7 @@ const submit = () => {
                                         :id="'spec_name_' + index"
                                         type="text"
                                         class="mt-1 block w-full bg-dark-card border-primary-blue/30 text-white focus:border-primary-blue focus:ring-primary-blue"
-                                        v-model="spec.name"
+                                        v-model="spec.spec_name"
                                         placeholder="Ej: Socket, Núcleos, Frecuencia"
                                     />
                                 </div>
@@ -265,7 +265,7 @@ const submit = () => {
                                             :id="'spec_value_' + index"
                                             type="text"
                                             class="mt-1 block w-full bg-dark-card border-primary-blue/30 text-white focus:border-primary-blue focus:ring-primary-blue"
-                                            v-model="spec.value"
+                                            v-model="spec.spec_value"
                                             placeholder="Ej: AM5, 16, 5.7 GHz"
                                         />
                                         <button
