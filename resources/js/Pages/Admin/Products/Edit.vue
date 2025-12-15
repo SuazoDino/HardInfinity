@@ -63,9 +63,11 @@ const removeSpecification = (index) => {
 };
 
 const submit = () => {
-    form.post(route('admin.products.update', props.product.id), {
+    form.transform((data) => ({
+        ...data,
+        _method: 'PUT'
+    })).post(route('admin.products.update', props.product.id), {
         forceFormData: true,
-        _method: 'put',
     });
 };
 </script>
