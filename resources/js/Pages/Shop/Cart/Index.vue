@@ -1,12 +1,15 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 
 const props = defineProps({
     cart: Object,
     total: Number,
 });
+
+const page = usePage();
+const user = computed(() => page.props.auth.user);
 
 const cartItems = computed(() => Object.values(props.cart));
 const shippingCost = computed(() => props.total > 500 ? 0 : 15);
@@ -23,6 +26,12 @@ const removeItem = (id) => {
     router.delete(route('cart.destroy', id), {
         preserveScroll: true,
     });
+};
+
+const proceedToCheckout = () => {
+    // Intentar ir al checkout. Si no está logueado, Laravel redirigirá al login
+    // y luego recordará volver al checkout (comportamiento estándar de 'auth' middleware).
+    router.get(route('shop.checkout.index'));
 };
 </script>
 
@@ -99,7 +108,10 @@ const removeItem = (id) => {
                             <span class="text-2xl font-bold text-brand-400">S/ {{ finalTotal.toFixed(2) }}</span>
                         </div>
 
-                        <button class="w-full py-4 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl shadow-lg shadow-brand-500/20 transition-all flex items-center justify-center gap-2">
+                        <button 
+                            @click="proceedToCheckout"
+                            class="w-full py-4 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl shadow-lg shadow-brand-500/20 transition-all flex items-center justify-center gap-2"
+                        >
                             <span>🔒</span> Proceder al Pago
                         </button>
 
