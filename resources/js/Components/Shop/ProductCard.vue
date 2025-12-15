@@ -18,7 +18,7 @@ const getImage = (product) => {
     if (product.images && product.images.length > 0) {
         return product.images.find(img => img.is_primary)?.image_path || product.images[0].image_path;
     }
-    return '/images/placeholder-product.png';
+    return 'https://via.placeholder.com/300x300/1a202c/0ea5e9?text=Sin+Imagen';
 };
 </script>
 

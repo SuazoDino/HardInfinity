@@ -14,7 +14,7 @@ const props = defineProps({
     in_wishlist: Boolean,
 });
 
-const activeImage = ref(props.product.images.find(img => img.is_primary)?.image_path || props.product.images[0]?.image_path || '/images/placeholder-product.png');
+const activeImage = ref(props.product.images.find(img => img.is_primary)?.image_path || props.product.images[0]?.image_path || 'https://via.placeholder.com/500x500/1a202c/0ea5e9?text=Sin+Imagen');
 const quantity = ref(1);
 const page = usePage();
 const user = computed(() => page.props.auth.user);
