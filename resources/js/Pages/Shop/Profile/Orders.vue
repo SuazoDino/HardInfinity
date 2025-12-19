@@ -28,6 +28,27 @@ const getStatusLabel = (status) => {
     return labels[status] || status;
 };
 
+// Progreso de la orden
+const getProgressPercentage = (status) => {
+    if (status === 'cancelled') return 0;
+    const steps = {
+        'pending': 10,
+        'paid': 35,
+        'shipped': 70,
+        'delivered': 100
+    };
+    return steps[status] || 0;
+};
+
+const getTrackingSteps = (currentStatus) => {
+    return [
+        { label: 'Confirmado', status: 'pending', active: true },
+        { label: 'En Almacén', status: 'paid', active: ['paid', 'shipped', 'delivered'].includes(currentStatus) },
+        { label: 'En Camino', status: 'shipped', active: ['shipped', 'delivered'].includes(currentStatus) },
+        { label: 'Entregado', status: 'delivered', active: currentStatus === 'delivered' }
+    ];
+};
+
 const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('es-PE', {
         year: 'numeric',
@@ -74,6 +95,31 @@ const formatDate = (dateString) => {
 
                 <!-- Items Preview -->
                 <div class="p-5 bg-black/20">
+                    
+                    <!-- Tracking Visual -->
+                    <div v-if="order.status !== 'cancelled'" class="mb-6 px-2">
+                        <div class="relative">
+                            <!-- Barra de fondo -->
+                            <div class="absolute top-1/2 left-0 w-full h-1 bg-gray-700 -translate-y-1/2 rounded-full"></div>
+                            <!-- Barra de progreso -->
+                            <div class="absolute top-1/2 left-0 h-1 bg-brand-500 -translate-y-1/2 rounded-full transition-all duration-500"
+                                :style="{ width: getProgressPercentage(order.status) + '%' }"
+                            ></div>
+                            
+                            <!-- Pasos -->
+                            <div class="relative flex justify-between">
+                                <div v-for="(step, index) in getTrackingSteps(order.status)" :key="index" class="flex flex-col items-center">
+                                    <div class="w-4 h-4 rounded-full border-2 z-10 transition-colors duration-300"
+                                        :class="step.active ? 'bg-brand-500 border-brand-500' : 'bg-[#151A23] border-gray-600'"
+                                    ></div>
+                                    <span class="mt-2 text-[10px] sm:text-xs uppercase font-bold tracking-wider transition-colors duration-300"
+                                        :class="step.active ? 'text-brand-400' : 'text-gray-600'"
+                                    >{{ step.label }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="space-y-3">
                         <div v-for="item in order.items" :key="item.id" class="flex gap-4 items-center">
                             <div class="w-10 h-10 bg-white/5 rounded flex items-center justify-center flex-shrink-0 text-lg">
@@ -86,17 +132,14 @@ const formatDate = (dateString) => {
                         </div>
                     </div>
                     
-                    <div class="mt-4 pt-4 border-t border-white/5 flex justify-between items-center">
+                    <div class="mt-4 pt-4 border-t border-white/5 flex justify-end items-center">
                         <a :href="route('profile.orders.download-pdf', order.id)" 
-                            class="text-sm text-primary-blue hover:text-white transition-colors font-medium flex items-center gap-1">
+                            class="text-sm text-brand-400 hover:text-white transition-colors font-medium flex items-center gap-2 bg-white/5 px-4 py-2 rounded-lg hover:bg-brand-600">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
                             Descargar PDF
                         </a>
-                        <button class="text-sm text-gray-400 hover:text-white transition-colors font-medium">
-                            Ver Detalles →
-                        </button>
                     </div>
                 </div>
             </div>

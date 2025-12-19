@@ -16,6 +16,7 @@ const form = useForm({
     city: '',
     phone: '',
     payment_method: 'card',
+    transaction_code: '', // Nuevo campo para Yape
     coupon_code: '',
 });
 
@@ -54,6 +55,11 @@ const validateCoupon = async () => {
 };
 
 const submit = () => {
+    if (form.payment_method === 'yape' && !form.transaction_code) {
+        alert('Por favor ingresa el código de operación de Yape.');
+        return;
+    }
+
     form.post(route('shop.checkout.store'), {
         preserveScroll: true,
         onError: () => {
@@ -128,21 +134,66 @@ const submit = () => {
                         </h2>
 
                         <div class="space-y-3">
-                            <label class="flex items-center gap-4 p-4 border border-gray-700 rounded-lg cursor-pointer hover:border-brand-500 transition-colors" :class="{'bg-brand-500/10 border-brand-500': form.payment_method === 'card'}">
-                                <input type="radio" v-model="form.payment_method" value="card" class="text-brand-600 bg-dark-bg border-gray-600 focus:ring-brand-500" />
-                                <span class="text-2xl">💳</span>
-                                <div>
-                                    <p class="text-white font-bold">Tarjeta (Simulado)</p>
-                                    <p class="text-xs text-gray-400">Se marcará como pagado de inmediato</p>
+                            <label class="flex items-start gap-4 p-4 border border-gray-700 rounded-lg cursor-pointer hover:border-brand-500 transition-colors" :class="{'bg-brand-500/10 border-brand-500': form.payment_method === 'card'}">
+                                <div class="flex items-center h-5">
+                                    <input type="radio" v-model="form.payment_method" value="card" class="text-brand-600 bg-dark-bg border-gray-600 focus:ring-brand-500" />
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="text-2xl">💳</span>
+                                        <p class="text-white font-bold">Tarjeta de Crédito / Débito</p>
+                                    </div>
+                                    <p class="text-xs text-gray-400">Visa, Mastercard, American Express</p>
+
+                                    <!-- Formulario de Tarjeta en Checkout -->
+                                    <div v-if="form.payment_method === 'card'" class="mt-4 p-4 bg-black/30 rounded-lg border border-brand-500/30 animate-in fade-in slide-in-from-top-2 grid grid-cols-2 gap-3">
+                                        <div class="col-span-2">
+                                            <input type="text" placeholder="Número de Tarjeta" class="w-full bg-dark-bg border border-gray-600 rounded text-white text-sm p-2" maxlength="19">
+                                        </div>
+                                        <div class="col-span-2">
+                                            <input type="text" placeholder="Nombre del Titular" class="w-full bg-dark-bg border border-gray-600 rounded text-white text-sm p-2 uppercase">
+                                        </div>
+                                        <div>
+                                            <input type="text" placeholder="MM/YY" class="w-full bg-dark-bg border border-gray-600 rounded text-white text-sm p-2" maxlength="5">
+                                        </div>
+                                        <div>
+                                            <input type="text" placeholder="CVV" class="w-full bg-dark-bg border border-gray-600 rounded text-white text-sm p-2" maxlength="4">
+                                        </div>
+                                    </div>
                                 </div>
                             </label>
 
-                            <label class="flex items-center gap-4 p-4 border border-gray-700 rounded-lg cursor-pointer hover:border-brand-500 transition-colors" :class="{'bg-purple-500/10 border-purple-500': form.payment_method === 'yape'}">
-                                <input type="radio" v-model="form.payment_method" value="yape" class="text-purple-600 bg-dark-bg border-gray-600 focus:ring-purple-500" />
-                                <span class="text-2xl">📱</span>
-                                <div>
-                                    <p class="text-white font-bold">Yape (Simulado)</p>
-                                    <p class="text-xs text-gray-400">QR ficticio, se marcará como pagado</p>
+                            <label class="flex items-start gap-4 p-4 border border-gray-700 rounded-lg cursor-pointer hover:border-brand-500 transition-colors" :class="{'bg-purple-500/10 border-purple-500': form.payment_method === 'yape'}">
+                                <div class="flex items-center h-5">
+                                    <input type="radio" v-model="form.payment_method" value="yape" class="text-purple-600 bg-dark-bg border-gray-600 focus:ring-purple-500" />
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="text-2xl">📱</span>
+                                        <p class="text-white font-bold">Yape</p>
+                                    </div>
+                                    <p class="text-xs text-gray-400">Escanea el QR y envía la constancia</p>
+                                    
+                                    <!-- Sección de Yape Desplegable -->
+                                    <div v-if="form.payment_method === 'yape'" class="mt-4 p-4 bg-black/30 rounded-lg border border-purple-500/30 animate-in fade-in slide-in-from-top-2">
+                                        <div class="flex flex-col items-center mb-4">
+                                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=YapeDemoHardInfinity" alt="QR Yape" class="w-32 h-32 rounded-lg border-4 border-white mb-2">
+                                            <p class="text-white font-bold">987 654 321</p>
+                                            <p class="text-xs text-gray-400">Dino Suazo - HardInfinity</p>
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="block text-purple-300 text-xs font-bold mb-1 uppercase">Código de Operación / N° Celular</label>
+                                            <input 
+                                                v-model="form.transaction_code"
+                                                type="text" 
+                                                placeholder="Ej: 1234567"
+                                                class="w-full bg-dark-bg border border-purple-500/50 rounded-lg text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500 p-2 text-sm"
+                                                required
+                                            />
+                                            <p class="text-[10px] text-gray-500 mt-1">Ingresa el código que aparece en tu comprobante de Yape.</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </label>
 
@@ -212,6 +263,11 @@ const submit = () => {
                             <div v-if="discount > 0" class="flex justify-between text-green-400">
                                 <span>Descuento</span>
                                 <span>- S/ {{ discount.toFixed(2) }}</span>
+                            </div>
+                            <!-- Desglose de impuestos informativo -->
+                            <div class="flex justify-between text-gray-500 text-xs italic pt-2">
+                                <span>Incluye IGV (18%)</span>
+                                <span>S/ {{ (total - (total / 1.18)).toFixed(2) }}</span>
                             </div>
                         </div>
 

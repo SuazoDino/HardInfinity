@@ -14,7 +14,7 @@ const props = defineProps({
 const showForm = ref(false);
 
 const form = useForm({
-    address_line1: '',
+    address_line: '',
     city: '',
     state: '',
     zip_code: '',
@@ -57,8 +57,8 @@ const deleteAddress = (id) => {
             <form @submit.prevent="submit" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="md:col-span-2">
                     <InputLabel value="Dirección (Calle, N°, Dpto)" class="text-gray-300" />
-                    <TextInput v-model="form.address_line1" type="text" class="mt-1 w-full bg-[#0B0E14]" required />
-                    <InputError :message="form.errors.address_line1" />
+                    <TextInput v-model="form.address_line" type="text" class="mt-1 w-full bg-[#0B0E14]" required />
+                    <InputError :message="form.errors.address_line" />
                 </div>
                 <div>
                     <InputLabel value="Ciudad" class="text-gray-300" />
@@ -95,7 +95,7 @@ const deleteAddress = (id) => {
                 <div class="flex items-start gap-3">
                     <span class="text-2xl">📍</span>
                     <div>
-                        <p class="text-white font-bold">{{ address.address_line1 }}</p>
+                        <p class="text-white font-bold">{{ address.address_line }}</p>
                         <p class="text-gray-400 text-sm">{{ address.city }}, {{ address.state }}</p>
                         <p class="text-gray-500 text-xs mt-1">{{ address.zip_code }} - {{ address.country }}</p>
                     </div>

@@ -74,6 +74,7 @@ Route::middleware('auth')->group(function () {
 
     // Perfil de Usuario
     Route::get('/mi-cuenta/pedidos', [ProfileController::class, 'orders'])->name('profile.orders');
+    Route::get('/mi-cuenta/pedidos/{order}/pdf', [ProfileController::class, 'downloadOrderPdf'])->name('profile.orders.download-pdf'); // Nueva ruta
     
     Route::get('/mi-cuenta/perfil', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/mi-cuenta/perfil', [ProfileController::class, 'update'])->name('profile.update');
@@ -84,6 +85,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/mi-cuenta/direcciones', [ProfileController::class, 'addresses'])->name('profile.addresses');
     Route::post('/mi-cuenta/direcciones', [ProfileController::class, 'addressStore'])->name('profile.addresses.store');
     Route::delete('/mi-cuenta/direcciones/{id}', [ProfileController::class, 'addressDestroy'])->name('profile.addresses.destroy');
+
+    Route::get('/mi-cuenta/tarjetas', [ProfileController::class, 'cards'])->name('profile.cards');
+    Route::post('/mi-cuenta/tarjetas', [ProfileController::class, 'cardStore'])->name('profile.cards.store');
+    Route::delete('/mi-cuenta/tarjetas/{id}', [ProfileController::class, 'cardDestroy'])->name('profile.cards.destroy');
 });
 
 /*

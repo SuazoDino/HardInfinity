@@ -256,7 +256,9 @@ const submitReview = () => {
                         <div v-for="rev in reviews" :key="rev.id" class="border-b border-white/5 pb-3">
                             <div class="flex items-center gap-2 text-sm">
                                 <span class="text-white font-semibold">{{ rev.user?.name || 'Usuario' }}</span>
-                                <span class="text-yellow-400">{"★".repeat(rev.rating)}</span>
+                                <div class="flex text-yellow-400 text-xs">
+                                    <span v-for="n in 5" :key="n" :class="n <= rev.rating ? 'opacity-100' : 'opacity-20'">★</span>
+                                </div>
                             </div>
                             <p class="text-gray-300 text-sm mt-1" v-if="rev.comment">{{ rev.comment }}</p>
                             <p class="text-gray-500 text-xs mt-1">{{ new Date(rev.created_at).toLocaleDateString('es-PE') }}</p>

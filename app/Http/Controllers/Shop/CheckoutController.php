@@ -50,6 +50,7 @@ class CheckoutController extends Controller
             'city' => 'required|string|max:100',
             'phone' => 'required|string|max:20',
             'payment_method' => 'required|in:card,yape,cash',
+            'transaction_code' => 'nullable|string|max:50', // Validar código yape
         ]);
 
         $cart = session()->get('cart', []);
@@ -79,6 +80,12 @@ class CheckoutController extends Controller
         
         $total = $subtotal + $shipping - $discount;
 
+        // Calcular base imponible e IGV (asumiendo precios incluyen IGV 18%)
+        // Base Imponible = Total / 1.18
+        // IGV = Total - Base Imponible
+        $base_imponible = $subtotal / 1.18;
+        $igv = $subtotal - $base_imponible;
+
         try {
             DB::beginTransaction();
 
@@ -87,11 +94,11 @@ class CheckoutController extends Controller
                 'order_number' => Order::generateOrderNumber(),
                 'user_id' => auth()->id(),
                 'status' => $request->payment_method === 'cash' ? 'pending' : 'paid',
-                'subtotal' => $subtotal,
+                'subtotal' => $subtotal, // Guardamos el subtotal bruto (con impuestos)
                 'shipping_cost' => $shipping,
                 'discount' => $discount,
                 'coupon_code' => $couponCode,
-                'tax' => $subtotal * 0.18,
+                'tax' => $igv, // Guardamos el monto del impuesto calculado
                 'total_amount' => $total,
                 'payment_method' => $request->payment_method,
                 'payment_status' => $request->payment_method === 'cash' ? 'pending' : 'paid',
@@ -106,7 +113,7 @@ class CheckoutController extends Controller
                     'product_id' => $item['id'],
                     'quantity' => $item['quantity'],
                     'unit_price' => $item['price'],
-                    'total_price' => $item['price'] * $item['quantity'],
+                    'subtotal' => $item['price'] * $item['quantity'],
                 ]);
                 
                 // Descontar stock y registrar movimiento de inventario
@@ -130,13 +137,26 @@ class CheckoutController extends Controller
 
             $paymentMethod = PaymentMethod::where('name', $pmName)->first();
 
+            $transactionStatus = match ($order->payment_status) {
+                'paid' => 'success',
+                'pending' => 'pending',
+                'failed' => 'failed',
+                default => 'pending',
+            };
+            
+            // Detalles de la transacción
+            $details = 'Pago simulado vía ' . $pmName;
+            if ($request->payment_method === 'yape' && $request->transaction_code) {
+                $details .= '. Cod. Op: ' . $request->transaction_code;
+            }
+
             Transaction::create([
                 'order_id' => $order->id,
                 'payment_method_id' => $paymentMethod?->id,
                 'transaction_code' => 'SIM-' . strtoupper(substr(uniqid(), -8)),
-                'status' => $order->payment_status,
+                'status' => $transactionStatus,
                 'amount' => $total,
-                'details' => 'Pago simulado vía ' . $pmName,
+                'details' => $details,
             ]);
 
             DB::commit();
