@@ -97,18 +97,25 @@ Route::middleware('auth')->group(function () {
 |--------------------------------------------------------------------------
 */
 
+// SEGURIDAD: Rutas de autenticación con protección contra fuerza bruta (rate limiting)
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/login', [AuthController::class, 'login'])
+        ->middleware('throttle:5,1'); // Máximo 5 intentos por minuto
     
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/register', [AuthController::class, 'register'])
+        ->middleware('throttle:3,1'); // Máximo 3 registros por minuto
     
     // Recuperación de contraseña
     Route::get('/forgot-password', [\App\Http\Controllers\Auth\PasswordResetController::class, 'requestForm'])->name('password.request');
-    Route::post('/forgot-password', [\App\Http\Controllers\Auth\PasswordResetController::class, 'sendResetLink'])->name('password.email');
+    Route::post('/forgot-password', [\App\Http\Controllers\Auth\PasswordResetController::class, 'sendResetLink'])
+        ->middleware('throttle:3,1') // Máximo 3 solicitudes por minuto
+        ->name('password.email');
     Route::get('/reset-password/{token}', [\App\Http\Controllers\Auth\PasswordResetController::class, 'resetForm'])->name('password.reset');
-    Route::post('/reset-password', [\App\Http\Controllers\Auth\PasswordResetController::class, 'reset'])->name('password.update');
+    Route::post('/reset-password', [\App\Http\Controllers\Auth\PasswordResetController::class, 'reset'])
+        ->middleware('throttle:3,1')
+        ->name('password.update');
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])

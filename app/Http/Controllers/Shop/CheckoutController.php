@@ -68,7 +68,8 @@ class CheckoutController extends Controller
             return to_route('shop.cart.index')->with('error', 'El carrito está vacío.');
         }
 
-        // Guardar tarjeta si se solicitó
+        // SEGURIDAD: Guardar tarjeta si se solicitó
+        // IMPORTANTE: SOLO guardamos los últimos 4 dígitos (NUNCA el número completo ni CVV)
         if ($request->payment_method === 'card' && $request->save_card && $request->card_number) {
             $firstDigit = substr($request->card_number, 0, 1);
             $brand = match($firstDigit) {
@@ -82,14 +83,16 @@ class CheckoutController extends Controller
             $expMonth = $exp[0] ?? '00';
             $expYear = $exp[1] ?? '00';
 
+            // Solo se guardan datos NO sensibles (últimos 4 dígitos)
             UserCard::create([
                 'user_id' => auth()->id(),
                 'brand' => $brand,
-                'last_four' => substr($request->card_number, -4),
+                'last_four' => substr($request->card_number, -4), // Solo últimos 4 dígitos
                 'holder_name' => $request->card_holder ?? 'NO NAME',
                 'exp_month' => $expMonth,
                 'exp_year' => $expYear,
             ]);
+            // NOTA: El número completo y CVV NUNCA se guardan en la base de datos
         }
 
         // Calcular totales finales
