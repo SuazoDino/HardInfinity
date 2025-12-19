@@ -10,6 +10,7 @@ use App\Models\PaymentMethod;
 use App\Models\Transaction;
 use App\Models\InventoryMovement;
 use App\Models\Product;
+use App\Models\UserCard; // Agregar modelo
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -50,13 +51,43 @@ class CheckoutController extends Controller
             'city' => 'required|string|max:100',
             'phone' => 'required|string|max:20',
             'payment_method' => 'required|in:card,yape,cash',
-            'transaction_code' => 'nullable|string|max:50', // Validar código yape
+            'transaction_code' => 'required_if:payment_method,yape|nullable|string|max:50',
+            // Validación OBLIGATORIA para tarjeta si se selecciona 'card'
+            'card_number' => 'required_if:payment_method,card|nullable|string|min:13|max:19',
+            'card_holder' => 'required_if:payment_method,card|nullable|string|max:255',
+            'card_exp' => 'required_if:payment_method,card|nullable|string|max:5',
+            'card_cvv' => 'required_if:payment_method,card|nullable|string|min:3|max:4',
+            'save_card' => 'boolean',
         ]);
 
         $cart = session()->get('cart', []);
 
         if (empty($cart)) {
             return to_route('shop.cart.index')->with('error', 'El carrito está vacío.');
+        }
+
+        // Guardar tarjeta si se solicitó
+        if ($request->payment_method === 'card' && $request->save_card && $request->card_number) {
+            $firstDigit = substr($request->card_number, 0, 1);
+            $brand = match($firstDigit) {
+                '4' => 'Visa',
+                '5' => 'Mastercard',
+                '3' => 'Amex',
+                default => 'Desconocida'
+            };
+            
+            $exp = explode('/', $request->card_exp);
+            $expMonth = $exp[0] ?? '00';
+            $expYear = $exp[1] ?? '00';
+
+            UserCard::create([
+                'user_id' => auth()->id(),
+                'brand' => $brand,
+                'last_four' => substr($request->card_number, -4),
+                'holder_name' => $request->card_holder ?? 'NO NAME',
+                'exp_month' => $expMonth,
+                'exp_year' => $expYear,
+            ]);
         }
 
         // Calcular totales finales

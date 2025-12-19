@@ -11,6 +11,7 @@ const menuItems = [
     { name: '❤️ Wishlist', route: 'wishlist.index', active: route().current('wishlist.index') },
     { name: '👤 Mi Cuenta', route: 'profile.edit', active: route().current('profile.edit') },
     { name: '📍 Direcciones', route: 'profile.addresses', active: route().current('profile.addresses') },
+    { name: '💳 Mis Tarjetas', route: 'profile.cards', active: route().current('profile.cards') },
     { name: '🔒 Seguridad', route: 'profile.security', active: route().current('profile.security') },
 ];
 </script>

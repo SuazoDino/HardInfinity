@@ -55,9 +55,22 @@ const validateCoupon = async () => {
 };
 
 const submit = () => {
+    // Validación Yape
     if (form.payment_method === 'yape' && !form.transaction_code) {
         alert('Por favor ingresa el código de operación de Yape.');
         return;
+    }
+
+    // Validación Tarjeta
+    if (form.payment_method === 'card') {
+        if (!form.card_number || !form.card_holder || !form.card_exp || !form.card_cvv) {
+            alert('Por favor completa todos los datos de la tarjeta.');
+            return;
+        }
+        if (form.card_number.length < 13) {
+            alert('El número de tarjeta es inválido.');
+            return;
+        }
     }
 
     form.post(route('shop.checkout.store'), {
@@ -146,18 +159,26 @@ const submit = () => {
                                     <p class="text-xs text-gray-400">Visa, Mastercard, American Express</p>
 
                                     <!-- Formulario de Tarjeta en Checkout -->
-                                    <div v-if="form.payment_method === 'card'" class="mt-4 p-4 bg-black/30 rounded-lg border border-brand-500/30 animate-in fade-in slide-in-from-top-2 grid grid-cols-2 gap-3">
-                                        <div class="col-span-2">
-                                            <input type="text" placeholder="Número de Tarjeta" class="w-full bg-dark-bg border border-gray-600 rounded text-white text-sm p-2" maxlength="19">
+                                    <div v-if="form.payment_method === 'card'" class="mt-4 p-4 bg-black/30 rounded-lg border border-brand-500/30 animate-in fade-in slide-in-from-top-2">
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div class="col-span-2">
+                                                <input v-model="form.card_number" type="text" placeholder="Número de Tarjeta" class="w-full bg-dark-bg border border-gray-600 rounded text-white text-sm p-2" maxlength="19">
+                                            </div>
+                                            <div class="col-span-2">
+                                                <input v-model="form.card_holder" type="text" placeholder="Nombre del Titular" class="w-full bg-dark-bg border border-gray-600 rounded text-white text-sm p-2 uppercase">
+                                            </div>
+                                            <div>
+                                                <input v-model="form.card_exp" type="text" placeholder="MM/YY" class="w-full bg-dark-bg border border-gray-600 rounded text-white text-sm p-2" maxlength="5">
+                                            </div>
+                                            <div>
+                                                <input v-model="form.card_cvv" type="text" placeholder="CVV" class="w-full bg-dark-bg border border-gray-600 rounded text-white text-sm p-2" maxlength="4">
+                                            </div>
                                         </div>
-                                        <div class="col-span-2">
-                                            <input type="text" placeholder="Nombre del Titular" class="w-full bg-dark-bg border border-gray-600 rounded text-white text-sm p-2 uppercase">
-                                        </div>
-                                        <div>
-                                            <input type="text" placeholder="MM/YY" class="w-full bg-dark-bg border border-gray-600 rounded text-white text-sm p-2" maxlength="5">
-                                        </div>
-                                        <div>
-                                            <input type="text" placeholder="CVV" class="w-full bg-dark-bg border border-gray-600 rounded text-white text-sm p-2" maxlength="4">
+                                        
+                                        <!-- Checkbox Guardar Tarjeta -->
+                                        <div class="mt-4 flex items-center gap-2">
+                                            <input type="checkbox" id="save_card" v-model="form.save_card" class="w-4 h-4 text-brand-600 bg-dark-bg border-gray-600 rounded focus:ring-brand-500">
+                                            <label for="save_card" class="text-sm text-gray-300 cursor-pointer select-none">Guardar esta tarjeta para futuras compras</label>
                                         </div>
                                     </div>
                                 </div>
