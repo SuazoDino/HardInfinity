@@ -33,17 +33,17 @@ class ReportController extends Controller
         ];
 
         // Productos más vendidos
-        $topProductos = Product::withCount(['orderItems' => function($q) use ($desde, $hasta) {
-            $q->whereHas('order', function($query) use ($desde, $hasta) {
-                $query->whereBetween('created_at', [$desde, $hasta])
-                      ->where('status', '!=', 'cancelled');
-            });
-        }])
-        ->with('brand')
-        ->having('order_items_count', '>', 0)
-        ->orderBy('order_items_count', 'desc')
-        ->take(10)
-        ->get();
+        $topProductos = Product::select('products.*')
+            ->selectRaw('COALESCE(SUM(order_items.quantity), 0) as total_vendido')
+            ->leftJoin('order_items', 'products.id', '=', 'order_items.product_id')
+            ->leftJoin('orders', 'order_items.order_id', '=', 'orders.id')
+            ->whereBetween('orders.created_at', [$desde, $hasta])
+            ->where('orders.status', '!=', 'cancelled')
+            ->with('brand')
+            ->groupBy('products.id')
+            ->orderByDesc('total_vendido')
+            ->take(10)
+            ->get();
 
         // Ventas por día
         $ventasPorDia = $ordenes->where('status', '!=', 'cancelled')

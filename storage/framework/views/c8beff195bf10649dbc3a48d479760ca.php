@@ -68,26 +68,26 @@
         <div class="header">
             <div class="logo"><span>Hard</span>Infinity</div>
             <div class="title">📊 REPORTE DE VENTAS</div>
-            <div class="subtitle">Período: {{ $stats['periodo'] }}</div>
+            <div class="subtitle">Período: <?php echo e($stats['periodo']); ?></div>
         </div>
 
         <!-- Estadísticas Generales -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-label">Total Ingresos</div>
-                <div class="stat-value">S/ {{ number_format($stats['total_ingresos'], 2) }}</div>
+                <div class="stat-value">S/ <?php echo e(number_format($stats['total_ingresos'], 2)); ?></div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Órdenes Procesadas</div>
-                <div class="stat-value">{{ $stats['total_ordenes'] }}</div>
+                <div class="stat-value"><?php echo e($stats['total_ordenes']); ?></div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Productos Vendidos</div>
-                <div class="stat-value">{{ $stats['total_productos_vendidos'] }}</div>
+                <div class="stat-value"><?php echo e($stats['total_productos_vendidos']); ?></div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Ticket Promedio</div>
-                <div class="stat-value">S/ {{ number_format($stats['ticket_promedio'], 2) }}</div>
+                <div class="stat-value">S/ <?php echo e(number_format($stats['ticket_promedio'], 2)); ?></div>
             </div>
         </div>
 
@@ -105,28 +105,28 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($topProductos as $index => $producto)
-                    <tr class="{{ $index < 3 ? 'highlight' : '' }}">
-                        <td class="text-center"><strong>{{ $index + 1 }}</strong></td>
-                        <td>{{ $producto->name }}</td>
-                        <td>{{ $producto->brand->name ?? 'N/A' }}</td>
-                        <td class="text-right"><strong>{{ $producto->total_vendido }}</strong></td>
-                        <td class="text-right">S/ {{ number_format($producto->price, 2) }}</td>
+                    <?php $__currentLoopData = $topProductos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $producto): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <tr class="<?php echo e($index < 3 ? 'highlight' : ''); ?>">
+                        <td class="text-center"><strong><?php echo e($index + 1); ?></strong></td>
+                        <td><?php echo e($producto->name); ?></td>
+                        <td><?php echo e($producto->brand->name ?? 'N/A'); ?></td>
+                        <td class="text-right"><strong><?php echo e($producto->total_vendido); ?></strong></td>
+                        <td class="text-right">S/ <?php echo e(number_format($producto->price, 2)); ?></td>
                     </tr>
-                    @endforeach
-                    @if($topProductos->isEmpty())
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php if($topProductos->isEmpty()): ?>
                     <tr>
                         <td colspan="5" class="text-center" style="padding: 20px; color: #999;">
                             No hay datos de ventas en este período
                         </td>
                     </tr>
-                    @endif
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
 
         <!-- Ventas por Día -->
-        @if($ventasPorDia->isNotEmpty())
+        <?php if($ventasPorDia->isNotEmpty()): ?>
         <div class="section">
             <div class="section-title">📅 VENTAS POR DÍA</div>
             <table>
@@ -138,24 +138,25 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($ventasPorDia as $dia)
+                    <?php $__currentLoopData = $ventasPorDia; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $dia): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <tr>
-                        <td>{{ $dia['fecha'] }}</td>
-                        <td class="text-center">{{ $dia['ordenes'] }}</td>
-                        <td class="text-right"><strong>S/ {{ number_format($dia['total'], 2) }}</strong></td>
+                        <td><?php echo e($dia['fecha']); ?></td>
+                        <td class="text-center"><?php echo e($dia['ordenes']); ?></td>
+                        <td class="text-right"><strong>S/ <?php echo e(number_format($dia['total'], 2)); ?></strong></td>
                     </tr>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </tbody>
             </table>
         </div>
-        @endif
+        <?php endif; ?>
 
         <!-- Footer -->
         <div class="footer">
             <p><strong>HardInfinity</strong> - Sistema de Gestión E-Commerce</p>
-            <p>Reporte generado el {{ $generado }}</p>
+            <p>Reporte generado el <?php echo e($generado); ?></p>
         </div>
     </div>
 </body>
 </html>
 
+<?php /**PATH C:\Users\informatica\HardInfinity-1\resources\views/pdf/reporte-ventas.blade.php ENDPATH**/ ?>
