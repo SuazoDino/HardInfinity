@@ -40,10 +40,23 @@ class BrandController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:brands,name',
             'description' => 'nullable|string',
-            'logo_url' => 'nullable|string',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp,svg|max:2048',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
+
+        // Subir logo si existe
+        if ($request->hasFile('logo')) {
+            $disk = env('FILESYSTEM_DISK', 'public');
+            
+            if ($disk === 'cloudinary') {
+                $result = $request->file('logo')->storeOnCloudinary('brands');
+                $validated['logo_url'] = $result->getSecurePath();
+            } else {
+                $path = $request->file('logo')->store('brands', 'public');
+                $validated['logo_url'] = '/storage/' . $path;
+            }
+        }
 
         Brand::create($validated);
 
@@ -81,10 +94,23 @@ class BrandController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:brands,name,' . $brand->id,
             'description' => 'nullable|string',
-            'logo_url' => 'nullable|string',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp,svg|max:2048',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
+
+        // Subir nuevo logo si existe
+        if ($request->hasFile('logo')) {
+            $disk = env('FILESYSTEM_DISK', 'public');
+            
+            if ($disk === 'cloudinary') {
+                $result = $request->file('logo')->storeOnCloudinary('brands');
+                $validated['logo_url'] = $result->getSecurePath();
+            } else {
+                $path = $request->file('logo')->store('brands', 'public');
+                $validated['logo_url'] = '/storage/' . $path;
+            }
+        }
 
         $brand->update($validated);
 

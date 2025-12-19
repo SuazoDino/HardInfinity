@@ -145,6 +145,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('orders/{order}/estornar', [OrderController::class, 'estornar'])->name('orders.estornar');
     Route::get('orders/{order}/pdf', [OrderController::class, 'downloadPdf'])->name('orders.download-pdf');
     
+    // Reportes PDF
+    Route::get('reportes/ventas/pdf', [App\Http\Controllers\Admin\ReportController::class, 'ventasPdf'])->name('reportes.ventas.pdf');
+    Route::get('reportes/inventario/pdf', [App\Http\Controllers\Admin\ReportController::class, 'inventarioPdf'])->name('reportes.inventario.pdf');
+    
     // Gestión de Usuarios
     Route::resource('users', UserController::class);
     

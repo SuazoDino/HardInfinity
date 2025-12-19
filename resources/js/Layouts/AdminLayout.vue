@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import NavLink from '@/Components/UI/NavLink.vue';
 
@@ -13,6 +13,22 @@ const pendingOrdersCount = computed(() => page.props.pending_orders_count || 0);
 const logout = () => {
     router.post(route('logout'));
 };
+
+// Cerrar dropdowns al hacer clic fuera
+const closeDropdowns = (event) => {
+    if (!event.target.closest('[data-dropdown]')) {
+        showingUserDropdown.value = false;
+        showingNavigationDropdown.value = false;
+    }
+};
+
+onMounted(() => {
+    document.addEventListener('click', closeDropdowns);
+});
+
+onUnmounted(() => {
+    document.removeEventListener('click', closeDropdowns);
+});
 
 const menuItems = [
     {
@@ -133,7 +149,7 @@ const menuItems = [
                     </Link>
 
                     <!-- User Dropdown -->
-                    <div class="relative">
+                    <div class="relative" data-dropdown>
                         <button @click="showingUserDropdown = !showingUserDropdown" class="flex items-center gap-3 pl-3 pr-1 py-1 hover:bg-white/5 rounded-full transition-colors border border-transparent hover:border-white/10">
                             <div class="text-right hidden sm:block">
                                 <p class="text-sm font-medium text-white leading-tight">{{ user.name }}</p>

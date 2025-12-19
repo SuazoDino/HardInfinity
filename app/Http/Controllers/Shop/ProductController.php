@@ -24,13 +24,13 @@ class ProductController extends Controller
             ->inStock();
 
         // Filtros
-        if ($request->category) {
+        if ($request->filled('category')) {
             $query->whereHas('category', function($q) use ($request) {
                 $q->where('slug', $request->category);
             });
         }
 
-        if ($request->brand) {
+        if ($request->filled('brand')) {
             $query->whereHas('brand', function($q) use ($request) {
                 $q->where('slug', $request->brand);
             });
@@ -149,7 +149,7 @@ class ProductController extends Controller
             ->featured(); // Solo productos destacados
 
         // Mantener los mismos filtros que el catálogo
-        if ($request->brand) {
+        if ($request->filled('brand')) {
             $query->whereHas('brand', function($q) use ($request) {
                 $q->where('slug', $request->brand);
             });

@@ -102,6 +102,16 @@ watch(form.value, () => applyFilters(), { deep: true });
                             Categorías
                         </h3>
                         <div class="space-y-2">
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input 
+                                    type="radio" 
+                                    name="category"
+                                    value=""
+                                    v-model="form.category"
+                                    class="w-4 h-4 text-brand-600 bg-dark-bg border-gray-600 focus:ring-brand-500 focus:ring-offset-dark-card"
+                                />
+                                <span class="text-gray-400 group-hover:text-white transition-colors text-sm font-medium">Todas</span>
+                            </label>
                             <label v-for="category in categories" :key="category.id" class="flex items-center gap-3 cursor-pointer group">
                                 <input 
                                     type="radio" 
@@ -122,6 +132,16 @@ watch(form.value, () => applyFilters(), { deep: true });
                             Marcas
                         </h3>
                         <div class="space-y-2 max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 pr-2">
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input 
+                                    type="radio" 
+                                    name="brand"
+                                    value=""
+                                    v-model="form.brand"
+                                    class="w-4 h-4 text-brand-600 bg-dark-bg border-gray-600 focus:ring-brand-500 focus:ring-offset-dark-card"
+                                />
+                                <span class="text-gray-400 group-hover:text-white transition-colors text-sm font-medium">Todas</span>
+                            </label>
                             <label v-for="brand in brands" :key="brand.id" class="flex items-center gap-3 cursor-pointer group">
                                 <input 
                                     type="radio" 

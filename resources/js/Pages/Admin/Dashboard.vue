@@ -33,9 +33,12 @@ const getStatusColor = (status) => {
                     <p class="text-gray-400 text-sm">Resumen de actividad de la tienda.</p>
                 </div>
                 <div class="flex gap-2">
-                    <button class="px-4 py-2 bg-[#151A23] border border-white/10 rounded-lg text-sm text-gray-300 hover:text-white hover:border-brand-500 transition-all">
-                        📅 Últimos 30 días
-                    </button>
+                    <a :href="route('admin.reportes.ventas.pdf')" class="px-4 py-2 bg-red-600 hover:bg-red-700 border border-red-500/30 rounded-lg text-sm text-white font-bold transition-all flex items-center gap-2">
+                        📊 Reporte Ventas PDF
+                    </a>
+                    <a :href="route('admin.reportes.inventario.pdf')" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 border border-purple-500/30 rounded-lg text-sm text-white font-bold transition-all flex items-center gap-2">
+                        📦 Reporte Inventario PDF
+                    </a>
                 </div>
             </div>
 

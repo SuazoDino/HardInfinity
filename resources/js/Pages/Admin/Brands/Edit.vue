@@ -13,11 +13,14 @@ const props = defineProps({
 const form = useForm({
     name: props.brand.name,
     description: props.brand.description,
-    logo_url: props.brand.logo_url,
+    logo: null,
+    _method: 'PUT',
 });
 
 const submit = () => {
-    form.put(route('admin.brands.update', props.brand.id));
+    form.post(route('admin.brands.update', props.brand.id), {
+        forceFormData: true,
+    });
 };
 </script>
 
@@ -49,17 +52,24 @@ const submit = () => {
                         <InputError class="mt-2" :message="form.errors.name" />
                     </div>
 
-                    <!-- URL Logo -->
+                    <!-- Logo Actual -->
+                    <div class="mb-4" v-if="brand.logo_url">
+                        <InputLabel value="Logo Actual" />
+                        <img :src="brand.logo_url" alt="Logo" class="mt-2 h-16 object-contain bg-white p-2 rounded">
+                    </div>
+
+                    <!-- Subir Nuevo Logo -->
                     <div class="mb-4">
-                        <InputLabel for="logo_url" value="URL del Logo (Opcional)" />
-                        <TextInput
-                            id="logo_url"
-                            type="text"
-                            class="mt-1 block w-full"
-                            v-model="form.logo_url"
-                            placeholder="/images/brands/mi-marca.png"
+                        <InputLabel for="logo" value="Subir Logo (Opcional - JPG, PNG, SVG)" />
+                        <input
+                            id="logo"
+                            type="file"
+                            class="mt-1 block w-full text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-brand-500 file:text-white hover:file:bg-brand-600 cursor-pointer"
+                            @input="form.logo = $event.target.files[0]"
+                            accept="image/jpeg,image/png,image/webp,image/svg+xml"
                         />
-                        <InputError class="mt-2" :message="form.errors.logo_url" />
+                        <p class="text-xs text-gray-500 mt-1">Máximo 2MB. Formatos: JPG, PNG, WEBP, SVG</p>
+                        <InputError class="mt-2" :message="form.errors.logo" />
                     </div>
 
                     <!-- Descripción -->
