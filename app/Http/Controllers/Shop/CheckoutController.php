@@ -11,8 +11,10 @@ use App\Models\Transaction;
 use App\Models\InventoryMovement;
 use App\Models\Product;
 use App\Models\UserCard; // Agregar modelo
+use App\Mail\OrderConfirmation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 
 class CheckoutController extends Controller
@@ -191,6 +193,17 @@ class CheckoutController extends Controller
             ]);
 
             DB::commit();
+
+            // Cargar relaciones para el correo
+            $order->load(['user', 'items.product']);
+
+            // Enviar correo de confirmación
+            try {
+                Mail::to(auth()->user()->email)->send(new OrderConfirmation($order));
+            } catch (\Exception $e) {
+                // Si falla el envío del correo, no afectamos la orden
+                \Log::error('Error al enviar correo de confirmación: ' . $e->getMessage());
+            }
 
             // Limpiar carrito
             session()->forget('cart');
