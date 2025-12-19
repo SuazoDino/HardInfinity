@@ -18,6 +18,12 @@ const form = useForm({
     payment_method: 'card',
     transaction_code: '', // Nuevo campo para Yape
     coupon_code: '',
+    // Campos de tarjeta
+    card_number: '',
+    card_holder: '',
+    card_exp: '',
+    card_cvv: '',
+    save_card: false,
 });
 
 const cartItems = computed(() => Object.values(props.cart));
