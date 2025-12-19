@@ -111,11 +111,12 @@ class CheckoutController extends Controller
             }
         }
         
+        // Total = Subtotal + Envío - Descuento
         $total = $subtotal + $shipping - $discount;
 
-        // Calcular base imponible e IGV (asumiendo precios incluyen IGV 18%)
-        // Base Imponible = Total / 1.18
-        // IGV = Total - Base Imponible
+        // Calcular base imponible e IGV (precios YA incluyen IGV 18%)
+        // Base Imponible = Subtotal / 1.18
+        // IGV = Subtotal - Base Imponible
         $base_imponible = $subtotal / 1.18;
         $igv = $subtotal - $base_imponible;
 

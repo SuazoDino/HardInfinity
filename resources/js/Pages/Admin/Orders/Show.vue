@@ -152,17 +152,22 @@ const formatDate = (dateString) => {
                                 <span class="text-gray-400">Subtotal</span>
                                 <span class="text-white font-medium">S/ {{ order.subtotal }}</span>
                             </div>
-                            <div class="flex justify-between text-sm mb-2">
+                            <div class="flex justify-between text-sm mb-4">
                                 <span class="text-gray-400">Envío</span>
                                 <span class="text-white font-medium">S/ {{ order.shipping_cost }}</span>
                             </div>
-                            <div class="flex justify-between text-sm mb-4">
-                                <span class="text-gray-400">Impuestos (IGV)</span>
-                                <span class="text-white font-medium">S/ {{ order.tax }}</span>
-                            </div>
-                            <div class="flex justify-between text-xl pt-4 border-t border-white/10">
+                            <div class="flex justify-between text-xl pt-4 border-t border-white/10 mb-3">
                                 <span class="text-white font-bold">Total</span>
                                 <span class="text-brand-400 font-bold">S/ {{ order.total_amount }}</span>
+                            </div>
+                            <!-- Desglose IGV (informativo) -->
+                            <div class="flex justify-between text-xs text-gray-500 italic pt-3 border-t border-white/5">
+                                <span>IGV incluido (18%)</span>
+                                <span>S/ {{ order.tax }}</span>
+                            </div>
+                            <div class="flex justify-between text-xs text-gray-500">
+                                <span>Base Imponible</span>
+                                <span>S/ {{ (order.subtotal - order.tax).toFixed(2) }}</span>
                             </div>
                         </div>
                     </div>

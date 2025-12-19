@@ -29,6 +29,10 @@ const validatingCoupon = ref(false);
 
 const total = computed(() => props.subtotal + props.shipping - discount.value);
 
+// IGV desglosado (los precios YA incluyen IGV)
+const baseImponible = computed(() => props.subtotal / 1.18);
+const igv = computed(() => props.subtotal - baseImponible.value);
+
 const validateCoupon = async () => {
     if (!form.coupon_code) return;
     
@@ -285,16 +289,16 @@ const submit = () => {
                                 <span>Descuento</span>
                                 <span>- S/ {{ discount.toFixed(2) }}</span>
                             </div>
-                            <!-- Desglose de impuestos informativo -->
-                            <div class="flex justify-between text-gray-500 text-xs italic pt-2">
-                                <span>Incluye IGV (18%)</span>
-                                <span>S/ {{ (total - (total / 1.18)).toFixed(2) }}</span>
-                            </div>
                         </div>
 
-                        <div class="flex justify-between items-center mb-8 border-t border-white/10 pt-4">
+                        <div class="flex justify-between items-center mb-4 border-t border-white/10 pt-4">
                             <span class="text-lg font-bold text-white">Total a Pagar</span>
                             <span class="text-2xl font-bold text-brand-400">S/ {{ total.toFixed(2) }}</span>
+                        </div>
+
+                        <!-- Desglose de IGV (informativo) -->
+                        <div class="text-center text-xs text-gray-500 mb-8 italic">
+                            El precio incluye IGV: S/ {{ igv.toFixed(2) }} (Base Imponible: S/ {{ baseImponible.toFixed(2) }})
                         </div>
 
                         <button 
