@@ -201,9 +201,11 @@ class CheckoutController extends Controller
             // Cargar relaciones para el correo
             $order->load(['user', 'items.product']);
 
-            // Enviar correo de confirmación
+            // Enviar correo de confirmación (solo si está configurado)
             try {
-                Mail::to(auth()->user()->email)->send(new OrderConfirmation($order));
+                if (config('mail.mailers.smtp.username') && config('mail.mailers.smtp.password')) {
+                    Mail::to(auth()->user()->email)->send(new OrderConfirmation($order));
+                }
             } catch (\Exception $e) {
                 // Si falla el envío del correo, no afectamos la orden
                 \Log::error('Error al enviar correo de confirmación: ' . $e->getMessage());
