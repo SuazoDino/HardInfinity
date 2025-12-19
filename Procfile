@@ -1,2 +1,2 @@
-web: php artisan optimize && php artisan migrate --force && php artisan db:seed --class=RoleSeeder --force && php artisan db:seed --class=AdminUserSeeder --force && php artisan serve --host=0.0.0.0 --port=$PORT
+web: php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT
 
