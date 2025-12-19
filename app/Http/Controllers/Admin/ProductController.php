@@ -86,9 +86,19 @@ class ProductController extends Controller
         // Guardar imágenes
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $index => $image) {
-                $path = $image->store('products', 'public');
+                // Si está en producción, usar Cloudinary; si no, usar storage local
+                $disk = env('FILESYSTEM_DISK', 'public');
+                
+                if ($disk === 'cloudinary') {
+                    $result = $image->storeOnCloudinary('products');
+                    $imagePath = $result->getSecurePath();
+                } else {
+                    $path = $image->store('products', 'public');
+                    $imagePath = '/storage/' . $path;
+                }
+                
                 $product->images()->create([
-                    'image_path' => '/storage/' . $path,
+                    'image_path' => $imagePath,
                     'is_primary' => $index === 0, // La primera imagen es la principal
                 ]);
             }
@@ -182,10 +192,19 @@ class ProductController extends Controller
         // Guardar nuevas imágenes
         if ($request->hasFile('new_images')) {
             $existingImagesCount = $product->images()->count();
+            $disk = env('FILESYSTEM_DISK', 'public');
+            
             foreach ($request->file('new_images') as $index => $image) {
-                $path = $image->store('products', 'public');
+                if ($disk === 'cloudinary') {
+                    $result = $image->storeOnCloudinary('products');
+                    $imagePath = $result->getSecurePath();
+                } else {
+                    $path = $image->store('products', 'public');
+                    $imagePath = '/storage/' . $path;
+                }
+                
                 $product->images()->create([
-                    'image_path' => '/storage/' . $path,
+                    'image_path' => $imagePath,
                     'is_primary' => $existingImagesCount === 0 && $index === 0, // Si no hay imágenes, la primera es principal
                 ]);
             }
